@@ -1,0 +1,72 @@
+---
+output: html_document
+params:
+  subj: subj
+  date: !r Sys.Date()
+title: "Individual connectiomeQC report for `r params$subj`"
+---
+
+\
+
+ConnectomeQC pipeline was run on `r params$date` for  `r params$subj`.
+
+*** 
+
+## 1. Atlas overlaid on to mean fmri image:
+
+\
+
+
+
+```{r, echo=FALSE,  out.width= "150%", out.height= "150%"}
+knitr::include_graphics(paste0(params$subj,"_overlay.png"))
+```
+
+***
+
+\
+
+## 1. Carpet plots:
+
+\
+
+```{r, echo=FALSE, echo=FALSE, out.width="50%", out.height="50%"}
+plots <- list.files(pattern = "*ordering*", full.names = TRUE)
+knitr::include_graphics(plots)
+```
+
+\
+
+## 2. Headmotion exclusion criteria 
+
+\
+
+```{r, echo=FALSE, message=FALSE}
+library(kableExtra)
+fdtable <- read.table(paste0(params$subj,"_fd_metrics.txt"))
+fdtable  %>%
+  kbl() %>%
+  kable_styling()
+```
+
+\
+
+## 3. Connectivity matrix:
+
+\
+
+```{r, echo=FALSE,out.width="150%", out.height="150%"}
+plots <- list.files(pattern = "*conmat*", full.names = TRUE)
+knitr::include_graphics(plots)
+```
+
+
+## 4. Distribution of connectivity values:
+
+\
+
+```{r, echo=FALSE}
+plots <- list.files(pattern = "*dist*", full.names = TRUE)
+knitr::include_graphics(plots)
+```
+

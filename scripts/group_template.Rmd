@@ -1,0 +1,48 @@
+---
+output: html_document
+---
+
+# ConnectomeQC Group Report {.tabset}
+
+## Read Me \
+
+This document can take upto 2 mins to fully load for large data sets (>100 scans). **Please wait** until "tabs" have appeared above this sentence before exploring the document. \ ConnectomeQC Group Report was created on `r Sys.Date()`. \
+
+***
+
+## 1. Headmotion exclusion
+
+Criteria from [Parkes et al., (2019)](https://www.sciencedirect.com/science/article/pii/S1053811917310972) was applied. A `1` in any of the collums means that the scan for this subject met this exclusion criteria, and could be excluded from futher analyses. The default leniaint exclusion criteria was set to mean FD > `.55 mm`. The default stringent exclusion criteria is set to: (i) mean FD > `.25 mm`, (ii) >20% of FD values > `.20 mm`, (iii) any FD values > `5 mm`. These criteria can be changed when running the pipeline by using the `--lenient_mean --stringent_mean --stringent_percent --stringent_largespike` flags. These defualt values assume FD is being calculated using the FDjenk, not FDpower. Please change these values to suit your purposes. 
+
+\
+
+```{r, echo=FALSE, message=FALSE}
+library(kableExtra)
+fdtable <- read.table("../fmriqc/output/group/groupfd_metrics.txt")
+fdtable %>%
+  kbl(caption = "1 = Exclusion criteria met") %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+```
+
+***
+
+## 1.Atlas overlay 
+To check that the user provided atlas is a good fit for each of the scans, several axial slices of each scan with the atlas overlaid on top have been provided below. Looks for areas of the brain which should be included in the atlas, but are missed, and likewise areas which should not be included but are. 
+
+
+```{r, results='asis', echo=FALSE}
+files <- list.files(path ="../fmriqc/output/", pattern = "*_overlay.png",full.names = TRUE,
+                    recursive = T)
+inv_reports <- list.files(path ="../fmriqc/output/", pattern = "^sub-.*\\.html",full.names = TRUE,
+                    recursive = T)
+
+for (f in 1:length(files)) {
+  cat(paste0("[![image_label](", files[[f]], ")](",inv_reports[[f]],")\n"))
+  }
+```
+
+#```{r, echo=FALSE, echo=FALSE, fig.cap= " "}
+#plots <- list.files(path ="../fmriqc/output/", pattern = "*_overlay.png",full.names = TRUE, #recursive = T)
+#knitr::include_graphics(plots)
+#```
+
